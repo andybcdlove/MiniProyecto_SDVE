@@ -15,6 +15,12 @@ namespace MiniProyecto_SDVE_Apache
             InitializeComponent();
         }
 
+        public PapeletaDinamica(string convocatoria) : this()
+        {
+            // Revisión de convocatoria: recibimos la elección para que la papeleta se configure después.
+            lTipoVotacion.Text = convocatoria;
+        }
+
         private void bConfirmar_Click(object sender, EventArgs e)
         {
             Reportes frmReportes = new Reportes();
