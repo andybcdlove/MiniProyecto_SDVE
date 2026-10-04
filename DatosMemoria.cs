@@ -83,13 +83,13 @@ namespace MiniProyecto_SDVE_Apache
             // Ana Torres: 1 voto
             new Voto { Convocatoria = "Consejo de Representantes", Candidato = "Ana Torres", Centro = "CCSyH", Carrera = "Derecho", Grupo = "A" }, // Alumno 1011
             
-            // Candidatos No Registrados (Write-in): 2 votos
+            // Candidatos no registrados (escritos por el alumno): 2 votos
             new Voto { Convocatoria = "Consejo de Representantes", Candidato = "Independiente 1", Centro = "CCS", Carrera = "Medicina", Grupo = "A" }, // Alumno 1005
             new Voto { Convocatoria = "Consejo de Representantes", Candidato = "Independiente 2", Centro = "CCSyH", Carrera = "Psicología", Grupo = "B" } // Alumno 1012
         };
 
 
-        // 4. Padrón oficial (Total: 20 registros. 12 han votado, 7 tienen abstención total, 1 Admin)
+        // 4. Padrón oficial (Total: 20 registros. 12 han votado, 7 tienen abstención total, 1 administrador)
         public static List<Alumno> DatosAlumno = new List<Alumno>()
         {
             // --- ALUMNOS QUE SÍ HAN VOTADO (Sus banderas coinciden con la lista de arriba) ---

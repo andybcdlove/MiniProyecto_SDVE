@@ -3,14 +3,14 @@
     partial class Convocatoria
     {
         /// <summary>
-        /// Required designer variable.
+        /// Variable necesaria para el diseñador.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        /// Libera los recursos que se estén utilizando.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true si se deben liberar los recursos administrados; de lo contrario, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -23,8 +23,8 @@
         #region Windows Form Designer generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Método necesario para el diseñador: no modifiques
+        /// el contenido de este método con el editor de código.
         /// </summary>
         private void InitializeComponent()
         {

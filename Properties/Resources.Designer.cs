@@ -15,7 +15,7 @@ namespace MiniProyecto_SDVE_Apache.Properties {
     /// <summary>
     ///   Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
     /// </summary>
-    // StronglyTypedResourceBuilder generó automáticamente esta clase
+        // El generador de recursos fuertemente tipados generó automáticamente esta clase
     // a través de una herramienta como ResGen o Visual Studio.
     // Para agregar o quitar un miembro, edite el archivo .ResX y, a continuación, vuelva a ejecutar ResGen
     // con la opción /str o recompile su proyecto de VS.
