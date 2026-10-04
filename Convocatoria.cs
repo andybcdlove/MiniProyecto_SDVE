@@ -16,6 +16,7 @@ namespace MiniProyecto_SDVE_Apache
 
             // Revisión de convocatoria: al abrirse se bloquean las elecciones ya realizadas.
             CargarConvocatoriasPendientes();
+            Activated += Convocatoria_Activated;
         }
 
         private void bContinuar_Click(object sender, EventArgs e)
@@ -40,6 +41,7 @@ namespace MiniProyecto_SDVE_Apache
             }
 
             PapeletaDinamica frmPapeleta = new PapeletaDinamica(convocatoriasSeleccionadas[0]);
+            frmPapeleta.Owner = this;
             frmPapeleta.Show();
             this.Hide();
         }
@@ -69,6 +71,12 @@ namespace MiniProyecto_SDVE_Apache
             chkSociedadAlumno.Checked = false;
             chkConsejoUniversitario.Checked = false;
             chkConsejoRepresentantes.Checked = false;
+        }
+
+        private void Convocatoria_Activated(object? sender, EventArgs e)
+        {
+            // Revisión de convocatoria: al regresar de la papeleta, actualizamos los bloqueos.
+            CargarConvocatoriasPendientes();
         }
     }
 }
