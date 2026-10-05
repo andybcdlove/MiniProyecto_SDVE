@@ -4,20 +4,58 @@ namespace MiniProyecto_SDVE_Apache
 {
     internal class MetodosPapeleta
     {
+        public Alumno ObtenerAlumnoActivo()
+        {
+            foreach (Alumno alumno in MemoriaElectoral.DatosAlumno)
+            {
+                if (alumno.Matricula == MemoriaElectoral.MatriculaActiva)
+                {
+                    return alumno;
+                }
+            }
+
+            return new Alumno();
+        }
+
+        public List<string> ObtenerCandidatosSociedad()
+        {
+            return MemoriaElectoral.CandidatosSociedad;
+        }
+
+        public List<string> ObtenerCandidatosConsejo()
+        {
+            return MemoriaElectoral.CandidatosConsejo;
+        }
+
+        public List<string> ObtenerCandidatosRepresentantes()
+        {
+            return MemoriaElectoral.CandidatosRepresentantes;
+        }
+
         public List<string> ObtenerCandidatos(string convocatoria)
         {
             // Revisión de papeleta: cada convocatoria muestra únicamente a sus candidatos.
             if (convocatoria == "Sociedad de Alumnos")
             {
-                return MemoriaElectoral.CandidatosSociedad;
+                return ObtenerCandidatosSociedad();
             }
 
             if (convocatoria == "Consejo Universitario")
             {
-                return MemoriaElectoral.CandidatosConsejo;
+                return ObtenerCandidatosConsejo();
             }
 
-            return MemoriaElectoral.CandidatosRepresentantes;
+            return ObtenerCandidatosRepresentantes();
+        }
+
+        public bool YaVoto(string convocatoria)
+        {
+            return YaVotoConvocatoria(ObtenerAlumnoActivo(), convocatoria);
+        }
+
+        public bool ValidarCandidato(string candidato)
+        {
+            return !string.IsNullOrWhiteSpace(candidato);
         }
 
         public bool RegistrarVoto(string convocatoria, string candidato)
@@ -57,15 +95,22 @@ namespace MiniProyecto_SDVE_Apache
         public bool AlumnoTerminoVotaciones()
         {
             // Revisión de papeleta: comprobamos si el alumno ya terminó las tres elecciones.
-            foreach (Alumno alumno in MemoriaElectoral.DatosAlumno)
+            Alumno alumno = ObtenerAlumnoActivo();
+            return alumno.VotoSociedad && alumno.VotoConsejo && alumno.VotoRepresentantes;
+        }
+
+        public void MarcarVoto(string convocatoria)
+        {
+            for (int indice = 0; indice < MemoriaElectoral.DatosAlumno.Count; indice++)
             {
-                if (alumno.Matricula == MemoriaElectoral.MatriculaActiva)
+                if (MemoriaElectoral.DatosAlumno[indice].Matricula == MemoriaElectoral.MatriculaActiva)
                 {
-                    return alumno.VotoSociedad && alumno.VotoConsejo && alumno.VotoRepresentantes;
+                    Alumno alumno = MemoriaElectoral.DatosAlumno[indice];
+                    MarcarConvocatoriaComoVotada(ref alumno, convocatoria);
+                    MemoriaElectoral.DatosAlumno[indice] = alumno;
+                    break;
                 }
             }
-
-            return false;
         }
 
         private bool YaVotoConvocatoria(Alumno alumno, string convocatoria)
@@ -93,7 +138,7 @@ namespace MiniProyecto_SDVE_Apache
             {
                 alumno.VotoConsejo = true;
             }
-            else
+            else if (convocatoria == "Consejo de Representantes")
             {
                 alumno.VotoRepresentantes = true;
             }
