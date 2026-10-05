@@ -185,7 +185,7 @@
             bSalir.BackColor = Color.DarkBlue;
             bSalir.Font = new Font("Verdana", 14F);
             bSalir.ForeColor = Color.White;
-            bSalir.Location = new Point(1065, 754);
+            bSalir.Location = new Point(1065, 690);
             bSalir.Name = "bSalir";
             bSalir.Size = new Size(199, 35);
             bSalir.TabIndex = 19;
@@ -214,7 +214,7 @@
             bRegresar.BackColor = Color.DarkBlue;
             bRegresar.Font = new Font("Verdana", 14F);
             bRegresar.ForeColor = Color.White;
-            bRegresar.Location = new Point(12, 754);
+            bRegresar.Location = new Point(12, 690);
             bRegresar.Name = "bRegresar";
             bRegresar.Size = new Size(199, 35);
             bRegresar.TabIndex = 21;
