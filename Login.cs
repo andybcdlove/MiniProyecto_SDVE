@@ -20,6 +20,7 @@ namespace MiniProyecto_SDVE_Apache
                 {
                     // Revisión de login: el administrador no vota; entra directo a reportes.
                     Reportes ventanaAdmin = new Reportes();
+                    ventanaAdmin.Owner = this;
                     ventanaAdmin.Show();
                     this.Hide();
                 }

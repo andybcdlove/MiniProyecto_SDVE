@@ -54,6 +54,20 @@ namespace MiniProyecto_SDVE_Apache
             return false;
         }
 
+        public bool AlumnoTerminoVotaciones()
+        {
+            // Revisión de papeleta: comprobamos si el alumno ya terminó las tres elecciones.
+            foreach (Alumno alumno in MemoriaElectoral.DatosAlumno)
+            {
+                if (alumno.Matricula == MemoriaElectoral.MatriculaActiva)
+                {
+                    return alumno.VotoSociedad && alumno.VotoConsejo && alumno.VotoRepresentantes;
+                }
+            }
+
+            return false;
+        }
+
         private bool YaVotoConvocatoria(Alumno alumno, string convocatoria)
         {
             if (convocatoria == "Sociedad de Alumnos")

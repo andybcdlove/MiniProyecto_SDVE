@@ -17,8 +17,9 @@ namespace MiniProyecto_SDVE_Apache
 
         private void bRegresar_Click(object sender, EventArgs e)
         {
-            PapeletaDinamica ventanaPapeleta = new PapeletaDinamica();
-            ventanaPapeleta.Show();
+            // Revisión de reportes: al salir de reportes volvemos al Login.
+            MemoriaElectoral.MatriculaActiva = "";
+            Owner?.Show();
             this.Close();
         }
 

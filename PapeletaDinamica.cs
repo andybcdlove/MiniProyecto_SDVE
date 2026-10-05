@@ -51,10 +51,23 @@ namespace MiniProyecto_SDVE_Apache
                 return;
             }
 
-            // Revisión de papeleta: volvemos a Convocatoria para votar las elecciones pendientes.
-            MessageBox.Show("Tu voto fue registrado correctamente.");
-            Owner?.Show();
-            Close();
+            if (metodosPapeleta.AlumnoTerminoVotaciones())
+            {
+                // Revisión de papeleta: al terminar las tres elecciones, mostramos los reportes.
+                MessageBox.Show("Tu voto fue registrado correctamente. Terminaste todas las convocatorias.");
+                Reportes ventanaReportes = new Reportes();
+                ventanaReportes.Owner = Owner?.Owner;
+                ventanaReportes.Show();
+                Owner?.Close();
+                Close();
+            }
+            else
+            {
+                // Revisión de papeleta: volvemos a Convocatoria para votar las elecciones pendientes.
+                MessageBox.Show("Tu voto fue registrado correctamente.");
+                Owner?.Show();
+                Close();
+            }
         }
 
         private void bSalir_Click(object sender, EventArgs e)
