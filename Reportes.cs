@@ -58,18 +58,34 @@ namespace MiniProyecto_SDVE_Apache
 
             // Revisión de reportes: la gráfica muestra los votos absolutos de cada candidato.
             chartResultado.Series.Clear();
-            Series serie = new Series("Votos Absolutos")
-            {
-                ChartType = SeriesChartType.Column,
-                IsValueShownAsLabel = true
-            };
+            ChartArea areaGrafica = chartResultado.ChartAreas[0];
+            areaGrafica.AxisX.Interval = 1;
+            areaGrafica.AxisX.LabelStyle.Angle = -45;
+            areaGrafica.AxisX.LabelStyle.Font = new Font("Verdana", 7F);
+            areaGrafica.AxisX.MajorGrid.Enabled = false;
+            areaGrafica.AxisY.Interval = 1;
+            areaGrafica.AxisY.Title = "Votos";
 
-            foreach (ResultadoReporte resultado in resultados)
+            // Una serie por convocatoria evita que las barras y los números se encimen.
+            foreach (IGrouping<string, ResultadoReporte> resultadosPorConvocatoria in resultados.GroupBy(resultado => resultado.Convocatoria))
             {
-                serie.Points.AddXY($"{resultado.Convocatoria}\n{resultado.Candidato}", resultado.Votos);
+                Series serie = new Series(resultadosPorConvocatoria.Key)
+                {
+                    ChartType = SeriesChartType.Column,
+                    IsValueShownAsLabel = true,
+                    Font = new Font("Verdana", 7F)
+                };
+
+                foreach (ResultadoReporte resultado in resultadosPorConvocatoria)
+                {
+                    DataPoint punto = new DataPoint();
+                    punto.SetValueXY(resultado.Candidato, resultado.Votos);
+                    punto.ToolTip = $"{resultado.Convocatoria}: {resultado.Candidato} - {resultado.Votos} votos";
+                    serie.Points.Add(punto);
+                }
+
+                chartResultado.Series.Add(serie);
             }
-
-            chartResultado.Series.Add(serie);
         }
 
         private void bExportar_Click(object? sender, EventArgs e)
