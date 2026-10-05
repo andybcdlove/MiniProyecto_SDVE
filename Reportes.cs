@@ -74,16 +74,21 @@ namespace MiniProyecto_SDVE_Apache
             Series serie = new Series("Resultados")
             {
                 ChartType = SeriesChartType.Column,
-                IsValueShownAsLabel = false
+                IsValueShownAsLabel = false,
+                XValueType = ChartValueType.Int32
             };
 
+            int posicionCandidato = 1;
             foreach (ResultadoReporte resultado in resultados)
             {
                 DataPoint punto = new DataPoint();
-                punto.SetValueXY(resultado.Candidato, resultado.Votos);
+                // Revisión de gráfica: cada candidato recibe una posición distinta para no superponer barras.
+                punto.SetValueXY(posicionCandidato, resultado.Votos);
+                punto.AxisLabel = resultado.Candidato;
                 punto.Color = ObtenerColorConvocatoria(resultado.Convocatoria);
                 punto.ToolTip = $"{resultado.Convocatoria}: {resultado.Candidato} - {resultado.Votos} votos";
                 serie.Points.Add(punto);
+                posicionCandidato++;
             }
 
             chartResultado.Series.Add(serie);
