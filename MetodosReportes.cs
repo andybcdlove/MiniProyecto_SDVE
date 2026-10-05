@@ -90,6 +90,8 @@ namespace MiniProyecto_SDVE_Apache
             {
                 List<string> lineas = new List<string>
                 {
+                    // Revisión de exportación: indicamos a Excel que las columnas están separadas por comas.
+                    "sep=,",
                     "Convocatoria,Candidato,Centro Universitario,Carrera,Grupo,Votos"
                 };
 
