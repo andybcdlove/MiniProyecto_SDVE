@@ -66,26 +66,42 @@ namespace MiniProyecto_SDVE_Apache
             areaGrafica.AxisY.Interval = 1;
             areaGrafica.AxisY.Title = "Votos";
 
-            // Una serie por convocatoria evita que las barras y los números se encimen.
-            foreach (IGrouping<string, ResultadoReporte> resultadosPorConvocatoria in resultados.GroupBy(resultado => resultado.Convocatoria))
+            chartResultado.Legends.Clear();
+            chartResultado.Titles.Clear();
+            chartResultado.Titles.Add("Azul: Sociedad | Naranja: Consejo | Rojo: Representantes");
+
+            // Revisión de gráfica: una sola serie evita que las barras de diferentes convocatorias se sobrepongan.
+            Series serie = new Series("Resultados")
             {
-                Series serie = new Series(resultadosPorConvocatoria.Key)
-                {
-                    ChartType = SeriesChartType.Column,
-                    IsValueShownAsLabel = true,
-                    Font = new Font("Verdana", 7F)
-                };
+                ChartType = SeriesChartType.Column,
+                IsValueShownAsLabel = false
+            };
 
-                foreach (ResultadoReporte resultado in resultadosPorConvocatoria)
-                {
-                    DataPoint punto = new DataPoint();
-                    punto.SetValueXY(resultado.Candidato, resultado.Votos);
-                    punto.ToolTip = $"{resultado.Convocatoria}: {resultado.Candidato} - {resultado.Votos} votos";
-                    serie.Points.Add(punto);
-                }
-
-                chartResultado.Series.Add(serie);
+            foreach (ResultadoReporte resultado in resultados)
+            {
+                DataPoint punto = new DataPoint();
+                punto.SetValueXY(resultado.Candidato, resultado.Votos);
+                punto.Color = ObtenerColorConvocatoria(resultado.Convocatoria);
+                punto.ToolTip = $"{resultado.Convocatoria}: {resultado.Candidato} - {resultado.Votos} votos";
+                serie.Points.Add(punto);
             }
+
+            chartResultado.Series.Add(serie);
+        }
+
+        private Color ObtenerColorConvocatoria(string convocatoria)
+        {
+            if (convocatoria == "Sociedad de Alumnos")
+            {
+                return Color.DodgerBlue;
+            }
+
+            if (convocatoria == "Consejo Universitario")
+            {
+                return Color.DarkOrange;
+            }
+
+            return Color.Firebrick;
         }
 
         private void bExportar_Click(object? sender, EventArgs e)
