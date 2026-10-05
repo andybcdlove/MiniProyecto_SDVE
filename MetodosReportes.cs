@@ -116,8 +116,8 @@ namespace MiniProyecto_SDVE_Apache
                 lineas.Add($"Total de Participación,,,,,{estadisticas.Participantes}");
                 lineas.Add($"Total de Abstencionismo,,,,,{estadisticas.Abstenciones}");
 
-                // Revisión de exportación: usamos la codificación de Windows para que Excel muestre bien los acentos.
-                File.WriteAllLines(rutaArchivo, lineas, Encoding.GetEncoding(1252));
+                // Revisión de exportación: Latin1 es compatible con Excel y conserva los acentos.
+                File.WriteAllLines(rutaArchivo, lineas, Encoding.Latin1);
                 return true;
             }
             catch (IOException)

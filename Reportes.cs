@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -11,9 +12,14 @@ namespace MiniProyecto_SDVE_Apache
 {
     public partial class Reportes : Form
     {
+        private List<ResultadoReporte> resultadosCompletos = new List<ResultadoReporte>();
+        private ComboBox cmbFiltroConvocatoria = new ComboBox();
+        private Label lblFiltroConvocatoria = new Label();
+
         public Reportes()
         {
             InitializeComponent();
+            ConfigurarFiltroConvocatoria();
             Load += Reportes_Load;
             bExportar.Click += bExportar_Click;
         }
@@ -39,12 +45,61 @@ namespace MiniProyecto_SDVE_Apache
         private void CargarReporte()
         {
             MetodosReportes metodosReportes = new MetodosReportes();
-            List<ResultadoReporte> resultados = metodosReportes.ObtenerResultados();
+            resultadosCompletos = metodosReportes.ObtenerResultados();
             EstadisticasParticipacion estadisticas = metodosReportes.ObtenerEstadisticasParticipacion();
+
+            lParticipacion.Text = $"{estadisticas.Participantes} ({estadisticas.PorcentajeParticipacion:0.00}%)";
+            lAbstinencia.Text = $"{estadisticas.Abstenciones} ({estadisticas.PorcentajeAbstencion:0.00}%)";
+            ActualizarResultadosMostrados();
+        }
+
+        private void ConfigurarFiltroConvocatoria()
+        {
+            // Revisión de filtro: permite consultar una convocatoria o todas las elecciones.
+            lblFiltroConvocatoria.AutoSize = true;
+            lblFiltroConvocatoria.Font = new Font("Verdana", 10F);
+            lblFiltroConvocatoria.Location = new Point(650, 109);
+            lblFiltroConvocatoria.Text = "Filtrar convocatoria:";
+
+            cmbFiltroConvocatoria.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFiltroConvocatoria.Font = new Font("Verdana", 10F);
+            cmbFiltroConvocatoria.Location = new Point(830, 105);
+            cmbFiltroConvocatoria.Size = new Size(230, 24);
+            cmbFiltroConvocatoria.Items.AddRange(new object[]
+            {
+                "Todas las convocatorias",
+                "Sociedad de Alumnos",
+                "Consejo Universitario",
+                "Consejo de Representantes"
+            });
+            cmbFiltroConvocatoria.SelectedIndex = 0;
+            cmbFiltroConvocatoria.SelectedIndexChanged += cmbFiltroConvocatoria_SelectedIndexChanged;
+
+            Controls.Add(lblFiltroConvocatoria);
+            Controls.Add(cmbFiltroConvocatoria);
+        }
+
+        private void cmbFiltroConvocatoria_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            // Revisión de filtro: actualizamos la tabla y la gráfica al cambiar la convocatoria.
+            ActualizarResultadosMostrados();
+        }
+
+        private void ActualizarResultadosMostrados()
+        {
+            string filtroSeleccionado = cmbFiltroConvocatoria.SelectedItem?.ToString() ?? "Todas las convocatorias";
+            List<ResultadoReporte> resultadosVisibles = resultadosCompletos;
+
+            if (filtroSeleccionado != "Todas las convocatorias")
+            {
+                resultadosVisibles = resultadosCompletos
+                    .Where(resultado => resultado.Convocatoria == filtroSeleccionado)
+                    .ToList();
+            }
 
             // Revisión de reportes: cargamos la tabla con votos y porcentajes por convocatoria.
             dataGridView1.Rows.Clear();
-            foreach (ResultadoReporte resultado in resultados)
+            foreach (ResultadoReporte resultado in resultadosVisibles)
             {
                 dataGridView1.Rows.Add(
                     resultado.Convocatoria,
@@ -52,9 +107,6 @@ namespace MiniProyecto_SDVE_Apache
                     resultado.Votos,
                     $"{resultado.Porcentaje:0.00}%");
             }
-
-            lParticipacion.Text = $"{estadisticas.Participantes} ({estadisticas.PorcentajeParticipacion:0.00}%)";
-            lAbstinencia.Text = $"{estadisticas.Abstenciones} ({estadisticas.PorcentajeAbstencion:0.00}%)";
 
             // Revisión de reportes: la gráfica muestra los votos absolutos de cada candidato.
             chartResultado.Series.Clear();
@@ -79,7 +131,7 @@ namespace MiniProyecto_SDVE_Apache
             };
 
             int posicionCandidato = 1;
-            foreach (ResultadoReporte resultado in resultados)
+            foreach (ResultadoReporte resultado in resultadosVisibles)
             {
                 DataPoint punto = new DataPoint();
                 // Revisión de gráfica: cada candidato recibe una posición distinta para no superponer barras.
