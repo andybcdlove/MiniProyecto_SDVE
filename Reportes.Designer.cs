@@ -3,14 +3,14 @@
     partial class Reportes
     {
         /// <summary>
-        /// Required designer variable.
+        /// Variable necesaria para el diseñador.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        /// Libera los recursos que se estén utilizando.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true si se deben liberar los recursos administrados; de lo contrario, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -23,8 +23,8 @@
         #region Windows Form Designer generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Método necesario para el diseñador: no modifiques
+        /// el contenido de este método con el editor de código.
         /// </summary>
         private void InitializeComponent()
         {
@@ -185,7 +185,7 @@
             bSalir.BackColor = Color.DarkBlue;
             bSalir.Font = new Font("Verdana", 14F);
             bSalir.ForeColor = Color.White;
-            bSalir.Location = new Point(1065, 754);
+            bSalir.Location = new Point(1065, 586);
             bSalir.Name = "bSalir";
             bSalir.Size = new Size(199, 35);
             bSalir.TabIndex = 19;
@@ -214,7 +214,7 @@
             bRegresar.BackColor = Color.DarkBlue;
             bRegresar.Font = new Font("Verdana", 14F);
             bRegresar.ForeColor = Color.White;
-            bRegresar.Location = new Point(12, 754);
+            bRegresar.Location = new Point(1065, 528);
             bRegresar.Name = "bRegresar";
             bRegresar.Size = new Size(199, 35);
             bRegresar.TabIndex = 21;
@@ -226,7 +226,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 18F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1276, 801);
+            ClientSize = new Size(1276, 749);
             Controls.Add(bRegresar);
             Controls.Add(chartResultado);
             Controls.Add(bSalir);

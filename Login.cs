@@ -11,35 +11,37 @@ namespace MiniProyecto_SDVE_Apache
         {
             MetodosLogin login = new MetodosLogin();
 
-            // 1. Primero validamos si existe y la contraseña está bien
-            bool puedeEntrar = login.ValidarUsuario(tID.Text, tContrasena.Text);
+            // Revisión de login: validamos las credenciales antes de abrir otra pantalla.
+            bool puedeEntrar = login.ValidarUsuario(tID.Text.Trim(), tContrasena.Text);
 
             if (puedeEntrar == true)
             {
                 if (MemoriaElectoral.MatriculaActiva == "admin")
                 {
+                    // Revisión de login: el administrador no vota; entra directo a reportes.
                     Reportes ventanaAdmin = new Reportes();
+                    ventanaAdmin.Owner = this;
                     ventanaAdmin.Show();
                     this.Hide();
                 }
                 else
                 {
-                    // 2. Si es alumno, revisamos si ya votó en todo antes de abrirle la ventana
-                    bool yaVoto = login.YaVotoEnTodo(tID.Text);
+                    // Revisión de login: bloqueamos al alumno que ya terminó las tres elecciones.
+                    bool yaVoto = login.YaVotoEnTodo(MemoriaElectoral.MatriculaActiva);
 
                     if (yaVoto == true)
                     {
-                        // Le avisamos y lo dejamos en el Login sin abrir nada
                         MessageBox.Show("Ya has participado en todas las convocatorias. Tu voto ha sido registrado anteriormente.");
 
-                        // Opcional: Limpiamos las cajas de texto para el siguiente
                         tID.Clear();
                         tContrasena.Clear();
+                        MemoriaElectoral.MatriculaActiva = "";
                     }
                     else
                     {
-                        // Si le falta al menos un voto, lo dejamos pasar
+                        // Revisión de login: se guarda la matrícula activa para Convocatoria.
                         Convocatoria ventanaAlumno = new Convocatoria();
+                        ventanaAlumno.Owner = this;
                         ventanaAlumno.Show();
                         this.Hide();
                     }
@@ -48,6 +50,8 @@ namespace MiniProyecto_SDVE_Apache
             else
             {
                 MessageBox.Show("Matrícula o contraseña incorrecta.");
+                tContrasena.Clear();
+                tContrasena.Focus();
             }
         }
 

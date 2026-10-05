@@ -13,25 +13,65 @@ namespace MiniProyecto_SDVE_Apache
         public Convocatoria()
         {
             InitializeComponent();
+
+            // Revisión de convocatoria: al abrirse se bloquean las elecciones ya realizadas.
+            CargarConvocatoriasPendientes();
+            Activated += Convocatoria_Activated;
         }
 
         private void bContinuar_Click(object sender, EventArgs e)
         {
-            PapeletaDinamica frmPapeleta = new PapeletaDinamica();
+            MetodosConvocatoria metodosConvocatoria = new MetodosConvocatoria();
+            List<string> convocatoriasSeleccionadas = metodosConvocatoria.ObtenerConvocatoriasSeleccionadas(
+                chkSociedadAlumno.Checked,
+                chkConsejoUniversitario.Checked,
+                chkConsejoRepresentantes.Checked);
+
+            // Revisión de convocatoria: debe seleccionarse al menos una elección pendiente.
+            if (convocatoriasSeleccionadas.Count == 0)
+            {
+                MessageBox.Show("Selecciona una convocatoria pendiente para continuar.");
+                return;
+            }
+
+            // Revisión de convocatoria: enviamos una o varias elecciones para votar en el orden seleccionado.
+            PapeletaDinamica frmPapeleta = new PapeletaDinamica(convocatoriasSeleccionadas);
+            frmPapeleta.Owner = this;
             frmPapeleta.Show();
             this.Hide();
         }
 
         private void bRegresar_Click(object sender, EventArgs e)
         {
-            Login ventanaLogin = new Login();
-            ventanaLogin.Show();
+            // Revisión de convocatoria: cerramos la sesión y mostramos el Login original.
+            MemoriaElectoral.MatriculaActiva = "";
+            Owner?.Show();
             this.Close();
         }
 
         private void bSalir_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void CargarConvocatoriasPendientes()
+        {
+            MetodosConvocatoria metodosConvocatoria = new MetodosConvocatoria();
+
+            // Revisión de convocatoria: una elección terminada no se puede volver a seleccionar.
+            chkSociedadAlumno.Enabled = !metodosConvocatoria.YaVotoConvocatoria("Sociedad de Alumnos");
+            chkConsejoUniversitario.Enabled = !metodosConvocatoria.YaVotoConvocatoria("Consejo Universitario");
+            chkConsejoRepresentantes.Enabled = !metodosConvocatoria.YaVotoConvocatoria("Consejo de Representantes");
+
+            chkSociedadAlumno.Checked = false;
+            chkConsejoUniversitario.Checked = false;
+            chkConsejoRepresentantes.Checked = false;
+        }
+
+        private void Convocatoria_Activated(object? sender, EventArgs e)
+        {
+            // Revisión de convocatoria: al regresar de la papeleta, actualizamos los bloqueos.
+            CargarConvocatoriasPendientes();
         }
     }
 }

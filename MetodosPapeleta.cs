@@ -1,9 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
 
 namespace MiniProyecto_SDVE_Apache
 {
-    public class MetodosPapeleta
+    internal class MetodosPapeleta
     {
         public Alumno ObtenerAlumnoActivo()
         {
@@ -33,20 +32,25 @@ namespace MiniProyecto_SDVE_Apache
             return MemoriaElectoral.CandidatosRepresentantes;
         }
 
-        public bool YaVoto(string convocatoria)
+        public List<string> ObtenerCandidatos(string convocatoria)
         {
-            Alumno alumno = ObtenerAlumnoActivo();
-
+            // Revisión de papeleta: cada convocatoria muestra únicamente a sus candidatos.
             if (convocatoria == "Sociedad de Alumnos")
-                return alumno.VotoSociedad;
+            {
+                return ObtenerCandidatosSociedad();
+            }
 
             if (convocatoria == "Consejo Universitario")
-                return alumno.VotoConsejo;
+            {
+                return ObtenerCandidatosConsejo();
+            }
 
-            if (convocatoria == "Consejo de Representantes")
-                return alumno.VotoRepresentantes;
+            return ObtenerCandidatosRepresentantes();
+        }
 
-            return false;
+        public bool YaVoto(string convocatoria)
+        {
+            return YaVotoConvocatoria(ObtenerAlumnoActivo(), convocatoria);
         }
 
         public bool ValidarCandidato(string candidato)
@@ -54,46 +58,89 @@ namespace MiniProyecto_SDVE_Apache
             return !string.IsNullOrWhiteSpace(candidato);
         }
 
-        public void RegistrarVoto(string convocatoria, string candidato)
+        public bool RegistrarVoto(string convocatoria, string candidato)
         {
-            Alumno alumno = ObtenerAlumnoActivo();
-
-            Voto nuevoVoto = new Voto
+            for (int indice = 0; indice < MemoriaElectoral.DatosAlumno.Count; indice++)
             {
-                Convocatoria = convocatoria,
-                Candidato = candidato,
-                Centro = alumno.Centro,
-                Carrera = alumno.Carrera,
-                Grupo = alumno.Grupo
-            };
+                Alumno alumno = MemoriaElectoral.DatosAlumno[indice];
 
-            MemoriaElectoral.VotosEmitidos.Add(nuevoVoto);
+                if (alumno.Matricula != MemoriaElectoral.MatriculaActiva)
+                {
+                    continue;
+                }
 
-            MarcarVoto(convocatoria);
+                // Revisión de papeleta: evitamos registrar dos votos en la misma convocatoria.
+                if (YaVotoConvocatoria(alumno, convocatoria))
+                {
+                    return false;
+                }
+
+                MemoriaElectoral.VotosEmitidos.Add(new Voto
+                {
+                    Convocatoria = convocatoria,
+                    Candidato = candidato,
+                    Centro = alumno.Centro,
+                    Carrera = alumno.Carrera,
+                    Grupo = alumno.Grupo
+                });
+
+                MarcarConvocatoriaComoVotada(ref alumno, convocatoria);
+                MemoriaElectoral.DatosAlumno[indice] = alumno;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool AlumnoTerminoVotaciones()
+        {
+            // Revisión de papeleta: comprobamos si el alumno ya terminó las tres elecciones.
+            Alumno alumno = ObtenerAlumnoActivo();
+            return alumno.VotoSociedad && alumno.VotoConsejo && alumno.VotoRepresentantes;
         }
 
         public void MarcarVoto(string convocatoria)
         {
-            for (int i = 0; i < MemoriaElectoral.DatosAlumno.Count; i++)
+            for (int indice = 0; indice < MemoriaElectoral.DatosAlumno.Count; indice++)
             {
-                if (MemoriaElectoral.DatosAlumno[i].Matricula ==
-                    MemoriaElectoral.MatriculaActiva)
+                if (MemoriaElectoral.DatosAlumno[indice].Matricula == MemoriaElectoral.MatriculaActiva)
                 {
-                    Alumno alumno = MemoriaElectoral.DatosAlumno[i];
-
-                    if (convocatoria == "Sociedad de Alumnos")
-                        alumno.VotoSociedad = true;
-
-                    if (convocatoria == "Consejo Universitario")
-                        alumno.VotoConsejo = true;
-
-                    if (convocatoria == "Consejo de Representantes")
-                        alumno.VotoRepresentantes = true;
-
-                    MemoriaElectoral.DatosAlumno[i] = alumno;
-
+                    Alumno alumno = MemoriaElectoral.DatosAlumno[indice];
+                    MarcarConvocatoriaComoVotada(ref alumno, convocatoria);
+                    MemoriaElectoral.DatosAlumno[indice] = alumno;
                     break;
                 }
+            }
+        }
+
+        private bool YaVotoConvocatoria(Alumno alumno, string convocatoria)
+        {
+            if (convocatoria == "Sociedad de Alumnos")
+            {
+                return alumno.VotoSociedad;
+            }
+
+            if (convocatoria == "Consejo Universitario")
+            {
+                return alumno.VotoConsejo;
+            }
+
+            return alumno.VotoRepresentantes;
+        }
+
+        private void MarcarConvocatoriaComoVotada(ref Alumno alumno, string convocatoria)
+        {
+            if (convocatoria == "Sociedad de Alumnos")
+            {
+                alumno.VotoSociedad = true;
+            }
+            else if (convocatoria == "Consejo Universitario")
+            {
+                alumno.VotoConsejo = true;
+            }
+            else if (convocatoria == "Consejo de Representantes")
+            {
+                alumno.VotoRepresentantes = true;
             }
         }
     }
