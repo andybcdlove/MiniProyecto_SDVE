@@ -11,6 +11,7 @@ namespace MiniProyecto_SDVE_Apache
     public partial class PapeletaDinamica : Form
     {
         private string convocatoriaSeleccionada = "";
+        private List<string> convocatoriasPendientes = new List<string>();
 
         public PapeletaDinamica()
         {
@@ -18,10 +19,15 @@ namespace MiniProyecto_SDVE_Apache
             rbCandidatoLibre.CheckedChanged += rbCandidatoLibre_CheckedChanged;
         }
 
-        public PapeletaDinamica(string convocatoria) : this()
+        public PapeletaDinamica(string convocatoria) : this(new List<string> { convocatoria })
         {
-            // Revisión de papeleta: recibimos y configuramos la elección seleccionada.
-            convocatoriaSeleccionada = convocatoria;
+        }
+
+        public PapeletaDinamica(List<string> convocatorias) : this()
+        {
+            // Revisión de papeleta: guardamos las elecciones seleccionadas para mostrarlas una por una.
+            convocatoriasPendientes = new List<string>(convocatorias);
+            convocatoriaSeleccionada = convocatoriasPendientes[0];
             lTipoVotacion.Text = convocatoriaSeleccionada;
             CargarCandidatos();
         }
@@ -59,6 +65,15 @@ namespace MiniProyecto_SDVE_Apache
                 ventanaReportes.Owner = Owner?.Owner;
                 ventanaReportes.Show();
                 Owner?.Close();
+                Close();
+            }
+            else if (convocatoriasPendientes.Count > 1)
+            {
+                // Revisión de papeleta: continuamos con la siguiente elección marcada por el alumno.
+                convocatoriasPendientes.Remove(convocatoriaSeleccionada);
+                PapeletaDinamica siguientePapeleta = new PapeletaDinamica(convocatoriasPendientes);
+                siguientePapeleta.Owner = Owner;
+                siguientePapeleta.Show();
                 Close();
             }
             else

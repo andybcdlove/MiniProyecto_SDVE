@@ -27,20 +27,15 @@ namespace MiniProyecto_SDVE_Apache
                 chkConsejoUniversitario.Checked,
                 chkConsejoRepresentantes.Checked);
 
-            // Revisión de convocatoria: la papeleta actual muestra una elección por vez.
+            // Revisión de convocatoria: debe seleccionarse al menos una elección pendiente.
             if (convocatoriasSeleccionadas.Count == 0)
             {
                 MessageBox.Show("Selecciona una convocatoria pendiente para continuar.");
                 return;
             }
 
-            if (convocatoriasSeleccionadas.Count > 1)
-            {
-                MessageBox.Show("Selecciona una sola convocatoria. Podrás regresar para votar las demás pendientes.");
-                return;
-            }
-
-            PapeletaDinamica frmPapeleta = new PapeletaDinamica(convocatoriasSeleccionadas[0]);
+            // Revisión de convocatoria: enviamos una o varias elecciones para votar en el orden seleccionado.
+            PapeletaDinamica frmPapeleta = new PapeletaDinamica(convocatoriasSeleccionadas);
             frmPapeleta.Owner = this;
             frmPapeleta.Show();
             this.Hide();
